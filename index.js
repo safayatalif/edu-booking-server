@@ -26,9 +26,8 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        const usersCollection = client.db('aircncDb').collection('users')
-        const roomsCollection = client.db('aircncDb').collection('rooms')
-        const bookingsCollection = client.db('aircncDb').collection('bookings');
+        const usersCollection = client.db('eduDB').collection('users')
+        const collagesCollection = client.db('eduDB').collection('collages')
 
         // Save user email and role in DB
         app.put('/users/:email', async (req, res) => {
@@ -41,6 +40,12 @@ async function run() {
             }
             const result = await usersCollection.updateOne(query, updateDoc, options)
             console.log(result)
+            res.send(result)
+        })
+
+        // Get all collages
+        app.get('/collages', async (req, res) => {
+            const result = await collagesCollection.find().toArray()
             res.send(result)
         })
 
@@ -57,9 +62,9 @@ async function run() {
 run().catch(console.dir)
 
 app.get('/', (req, res) => {
-    res.send('AirCNC Server is running..')
+    res.send('Edu Bookings Server is running..')
 })
 
 app.listen(port, () => {
-    console.log(`AirCNC is running on port ${port}`)
+    console.log(`Edu Bookings is running on port ${port}`)
 })
