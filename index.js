@@ -49,6 +49,27 @@ async function run() {
             res.send(result)
         })
 
+        // Get a single collage
+        app.get('/collage/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: new ObjectId(id) }
+            const result = await collagesCollection.findOne(query)
+            res.send(result)
+        })
+
+        // Get data by search 
+        app.get("/getCollageByText/:text", async (req, res) => {
+            const text = req.params.text;
+            const result = await collagesCollection
+                .find({
+                    $or: [
+                        { collegeName: { $regex: text, $options: "i" } },
+                    ],
+                })
+                .toArray();
+            res.send(result);
+        });
+
         // Send a ping to confirm a successful connection
         await client.db('admin').command({ ping: 1 })
         console.log(
