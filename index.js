@@ -29,6 +29,7 @@ async function run() {
         const usersCollection = client.db('eduDB').collection('users')
         const collagesCollection = client.db('eduDB').collection('collages')
         const candidatesCollection = client.db('eduDB').collection('candidates')
+        const reviewsCollection = client.db('eduDB').collection('reviews')
 
         // Save user email and role in DB
         app.put('/users/:email', async (req, res) => {
@@ -84,6 +85,19 @@ async function run() {
             const email = req.params.email
             const query = { candidateEmail: email }
             const result = await candidatesCollection.find(query).toArray()
+            res.send(result)
+        })
+
+        // post review 
+        app.post('/review', async (req, res) => {
+            const review = req.body
+            const result = await reviewsCollection.insertOne(review)
+            res.send(result)
+        })
+
+        // Get all review 
+        app.get('/reviews', async (req, res) => {
+            const result = await reviewsCollection.find().toArray()
             res.send(result)
         })
 
