@@ -28,6 +28,7 @@ async function run() {
     try {
         const usersCollection = client.db('eduDB').collection('users')
         const collagesCollection = client.db('eduDB').collection('collages')
+        const candidatesCollection = client.db('eduDB').collection('candidates')
 
         // Save user email and role in DB
         app.put('/users/:email', async (req, res) => {
@@ -69,6 +70,23 @@ async function run() {
                 .toArray();
             res.send(result);
         });
+
+
+        // Save a candidate in database
+        app.post('/candidate', async (req, res) => {
+            const candidate = req.body
+            const result = await candidatesCollection.insertOne(candidate)
+            res.send(result)
+        })
+
+        // get collages by email in candidate collection 
+        app.get('/candidates/:email', async (req, res) => {
+            const email = req.params.email
+            const query = { candidateEmail: email }
+            const result = await candidatesCollection.find(query).toArray()
+            res.send(result)
+        })
+
 
         // Send a ping to confirm a successful connection
         await client.db('admin').command({ ping: 1 })
